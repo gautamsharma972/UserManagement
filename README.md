@@ -1,7 +1,5 @@
 # User Management API Setup
 
-User Management APIs
-
 Clone the project, change the connection string in appsettings.json and perform the following command in package manager console:
 
 > add-migration init
