@@ -5,4 +5,4 @@ Clone the project, change the connection string in appsettings.json and perform 
 
 > update-database
 
-For SMS settings, you need to change the user id and password for SMS to work.
+For SMS settings, you need to change the user id and password for SMS to work which is mentioned in appsettings.json.
