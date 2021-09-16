@@ -1,0 +1,193 @@
+<p class="text-muted" *ngIf="(users| filter:filterSearch).length<=0">
+  <i class="fa fa-exclamation-triangle text-warning"></i> No results found. Try searching with another term.
+</p>
+
+<table class="table table-sm table-bordered table-hover" *ngIf="(users| filter:filterSearch).length>0">
+  <thead class="bg-light">
+    <tr class="border-bottom">
+      <th scope="col" class="text-left">
+        <p class="m-1 text-center font-weight-bold">#</p>
+      </th>
+      <th scope="col" class="text-left"
+          (click)="isAscendingSort = !isAscendingSort; sort(isAscendingSort)">
+        <p class="m-1">
+          <b>
+            Name
+            <span class="float-right m-1" [ngClass]="isAscendingSort? 'fa fa-angle-up':'fa fa-angle-down'"></span>
+          </b>
+        </p>
+      </th>
+      <th scope="col" class="text-left"
+          (click)="isAscendingSort = !isAscendingSort; sort(isAscendingSort)">
+        <p class="m-1">
+          <b>
+            Username
+            <span class="float-right m-1" [ngClass]="isAscendingSort? 'fa fa-angle-up':'fa fa-angle-down'"></span>
+          </b>
+        </p>
+      </th>
+
+      <th scope="col" class="text-left" (click)="isAscendingSort = !isAscendingSort; sort(isAscendingSort)">
+        <p class="m-1">
+          <b>
+            Phone Number
+            <span class="float-right m-1" [ngClass]="isAscendingSort? 'fa fa-angle-up':'fa fa-angle-down'"></span>
+          </b>
+        </p>
+      </th>
+
+      <th scope="col" class="text-left">
+        <p class="m-1">
+          <b>
+            Enabled Roles
+            <span class="float-right" id="roleFilterDiv">
+              <i class="fa fa-filter text-primary dropdown-toggle" data-toggle="dropdown"></i>
+              <ul class="dropdown-menu" style="cursor:pointer">
+                <span style="font-size:small; font-weight:normal; margin-left:15px; padding-bottom:15px">Filter by Roles</span>
+                <li class="dropdown-item" *ngFor="let role of usedRoles">
+                  <label class="container-checkbox" style="margin-bottom:0;">
+                    <input type="checkbox" [value]="role.checked" id="roleCheck_{{role}}" (change)="filterRole($event, role)">
+                    <span class="checkmark"></span> {{role}}
+                  </label>
+                </li>
+                <li class="dropdown-item">
+                  <hr />
+                  <button class="btn btn-sm btn-danger" (click)="resetRoleFilter()">Reset</button>
+                </li>
+              </ul>
+            </span>
+          </b>
+        </p>
+      </th>
+      <th scope="col" class="text-left">
+        <p class="m-1">
+          <b>
+            Active
+            <span class="float-right">
+              <i class="fa fa-filter text-primary dropdown-toggle" data-toggle="dropdown"></i>
+              <ul class="dropdown-menu" style="cursor:pointer">
+                <span style="font-size:small; font-weight:normal; margin-left:15px; padding-bottom:15px">Filter by Active Status</span>
+                <li class="dropdown-item">
+                  <label class="container-checkbox" style="margin-bottom:0;">
+                    <input type="checkbox" [value]="true" id="activeCheck_1" (change)="filterActiveStatus($event, 1)">
+                    <span class="checkmark"></span> No
+                  </label>
+                </li>
+                <li class="dropdown-item">
+                  <label class="container-checkbox" style="margin-bottom:0;">
+                    <input type="checkbox" [value]="false" id="activeCheck_0" (change)="filterActiveStatus($event, 0)">
+                    <span class="checkmark"></span> Yes
+                  </label>
+                </li>
+                <li class="dropdown-item">
+                  <hr />
+                  <button class="btn btn-sm btn-danger" (click)="resetActiveFilter()">Reset</button>
+                </li>
+              </ul>
+            </span>
+          </b>
+        </p>
+      </th>
+
+      <th scope="col" *ngIf="permissions.includes('edituser')">
+        &nbsp;
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let user of users | filter:filterSearch| paginate: { itemsPerPage: limitTo, currentPage: page }; let i = index"
+        [ngClass]="user.userTypes!=undefined && user.userTypes.id == 2?'bg-light border-dark':''">
+      <td class="text-center" [routerLink]="['/users/edit', user.id]" style="cursor:pointer">
+        <p class="text-muted">{{i+1}}</p>
+      </td>
+      <td class="text-left" [routerLink]="['/users/edit', user.id]" style="cursor:pointer">
+        <p class="text-dark m-1">{{user.firstName}} {{user.lastName}}</p>
+      </td>
+      <td class="text-left" [routerLink]="['/users/edit', user.id]" style="cursor:pointer">
+        <p class="m-1">
+          {{user.userName}}
+        </p>
+      </td>
+      <td class="text-left" [routerLink]="['/users/edit', user.id]" style="cursor:pointer">
+        <p class="m-1">{{user.phoneNumber}}</p>
+      </td>
+      <td class="text-left" [routerLink]="['/users/edit', user.id]" style="cursor:pointer">
+        <p class="m-1">
+          <span *ngFor="let role of user.userRoles; let rIndex = index">
+            <span class="mr-0">{{role}}</span>
+            <span *ngIf="rIndex != user.userRoles.length-1" class="ml-0 pl-0 mr-2">,</span>
+          </span>
+        </p>
+      </td>
+      <td class="text-left" [ngStyle]="{cursor: !permissions.includes('edituser')?'not-allowed':'pointer'}">
+        <p class="m-1" style="cursor:pointer" title="{{(permissions.includes('edituser')? 'Click to change user\'\s Active status':'You do not have permission to edit User\'\s details')}}"
+           [ngStyle]="{cursor: !permissions.includes('edituser')?'not-allowed':'pointer'}">
+          <label class="switch" for="checkbox_{{user.id}}" style="margin-bottom:0" [ngStyle]="{cursor: !permissions.includes('edituser')?'not-allowed':'pointer'}">
+            <input type="checkbox" [appDisable]="!permissions.includes('edituser')" [ngStyle]="{cursor: !permissions.includes('edituser')?'not-allowed':'pointer'}" id="checkbox_{{user.id}}"
+                   [checked]="user.isActive" (change)="changeUserStatus($event, user)" />
+            <div class="slider round" [ngStyle]="{cursor: !permissions.includes('edituser')?'not-allowed':'pointer'}"></div>
+          </label>
+        </p>
+      </td>
+      <td class="text-center" *ngIf="permissions.includes('edituser')">
+        <p class="m-1" style="cursor:pointer" data-toggle="modal" [attr.data-target]="'#userQuickAction_'+user.id" title="Quick Actions">
+          <i class="fa fa-tasks text-primary mr-2"></i>
+        </p>
+
+        <div class="modal right fade" id="userQuickAction_{{user.id}}" tabindex="-1" role="dialog" aria-labelledby="userQuickAction">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content text-left">
+              <div class="modal-body">
+                <p class="font-weight-bold">
+                  Quick Actions <button type="button" class="close float-right" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </p>
+                <h4 style="cursor:pointer" [routerLink]="['/users/edit', user.id]">
+                  {{user.firstName}} {{user.lastName}}
+                  <a class="text-primary float-right" data-dismiss="modal" style="font-size:small"><i class="fa fa-edit"></i></a>
+                </h4>
+                <hr />
+                <b>
+                  Assigned Roles
+                </b>
+                <div class="col-md-12 mt-3" *ngFor="let role of roles; let last = last">
+                  <label class="container-checkbox" style="margin-bottom:0;">
+                    <input type="checkbox" (change)="setUpdatedRoles($event, role, user)"
+                           [checked]="user.userRoles.includes(role.name)? true:false" [value]="user.userRoles.includes(role.name)? true:false">
+                    <span class="checkmark"></span> {{role.name}}
+                  </label>
+                </div>
+                <button class="btn btn-primary mt-3" (click)="updateRoles()">Save changes</button>
+                <div class="mt-5">
+                  <hr />
+                  <a href="javascript:void(0)" data-dismiss="modal" [routerLink]="['/users/edit', user.id]">Edit full details</a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="row" *ngIf="(users| filter:filterSearch).length>0">
+  <div class="col-md-6">
+    <p class="mt-2 mr-3 ml-2 inline-block d-flex" *ngIf="showPageLimit=='true' && users.length>20">
+      Show
+      <select class="ml-2 mr-2" style="max-width:100px" [(ngModel)]="limitTo">
+        <option value="5">5</option>
+        <option value="10">10</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+        <option value="500">500</option>
+      </select> records per page
+    </p>
+  </div>
+  <div class="col-md-6">
+    <div *ngIf="showPagination == 'true'" class="float-right">
+      <pagination-controls class="ml-auto" (pageChange)="page = $event"></pagination-controls>
+    </div>
+  </div>
+
+</div>

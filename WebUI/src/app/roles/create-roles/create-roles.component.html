@@ -1,0 +1,162 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h4 class="m-0">Manage Roles</h4>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a [routerLink]="['/']">Dashboard</a></li>
+          <li class="breadcrumb-item"><a [routerLink]="['/roles']">Roles</a></li>
+          <li class="breadcrumb-item"><a>Create</a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="loading">
+  <span class="spinner-border spinner-border-sm text-muted"></span> loading...
+</div>
+<section class="content" *ngIf="!loading">
+  <div class="animated fadeIn container-fluid">
+    <div class="row">
+      <div class="col-md-12" *ngIf="!userPermissions.includes('addrole')">
+        <div class="card">
+          <div class="card-body border border-warning bg-white text-center p-5">
+            <i class="fa fa-exclamation-triangle text-warning fa-4x mb-3"></i>
+            <p class="mb-0 text-center alert alert-text"> You do not have permission to create Roles. Contact your Administrator to manage your Permission.</p>
+            <a href="javascript:void(0);" [routerLink]="['/']" class="btn btn-outline-primary text-underline">Back to Dashboard</a>
+          </div>
+        </div>
+
+      </div>
+      <div class="col-md-12" *ngIf="userPermissions.includes('addrole')">
+        <div class="card">
+          <div class="card-header bg-white">
+            <h5>
+              Create Role
+            </h5>
+            <p class="text-muted mb-0"><span class="text-danger">*</span> marked fields are mandatory.</p>
+          </div>
+          <div class="card-body">
+
+            <div class="form-group row">
+              <div *ngIf="error.length>0" class="col-md-12">
+                <div *ngFor="let msg of error">
+                  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fa fa-exclamation-triangle"></i> {{msg}}
+                    <button type="button" class="close text-light" data-dismiss="alert" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4 col-sm-12">
+                <label>Role Name<span class="text-danger">*</span></label>
+                <div class="input-group mb-3">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="basic-addon1">
+                      <i class="fa fa-lock"></i>
+                    </span>
+                  </div>
+                  <input (keypress)="verifyName($event)" required type="text" class="form-control" placeholder="Role Name"
+                         aria-label="name" aria-describedby="basic-addon1" id="roleInput"
+                         [(ngModel)]="roleInput.name" [ngModelOptions]="{standalone:false}">
+                </div>
+              </div>
+              <div class="col-md-12 mt-3">
+
+                <div class="form-group row mb-0">
+                  <div class="col-md-7 mb-0">
+                    <h6 class="font-weight-bold">Assign Permissions</h6>
+                    <p class="text-muted mb-0">Assign Permissions applicable for this Role.</p>
+                  </div>
+                  <div class="col-md-5 mb-0">
+                    <div class="ng-autocomplete w-100" style="margin-bottom:0; padding-bottom:0">
+                      <ng-autocomplete [data]="permissions"
+                                       style="box-shadow:none; font-size:1rem; height:auto"
+                                       placeholder="Search Permissions"
+                                       [searchKeyword]="keyword"
+                                       (selected)='selectEvent($event)'
+                                       (inputChanged)='onChangeSearch($event)'
+                                       (inputFocused)='onFocused($event)'
+                                       [itemTemplate]="itemTemplate"
+                                       [notFoundTemplate]="notFoundTemplate">
+                      </ng-autocomplete>
+
+                      <ng-template #itemTemplate let-item>
+                        <p class="mt-2">
+                          <label class="container-checkbox" style="font-weight:normal">
+                            <input type="checkbox" [(ngModel)]="item.checked">
+                            <span class="checkmark"></span> {{item.moduleOperations.modules.name}} / {{item.moduleOperations.name}} /
+                            <span [innerHtml]="item.permissions"></span>
+                          </label>
+                        </p>
+                      </ng-template>
+
+                      <ng-template #notFoundTemplate let-notFound>
+                        <div [innerHTML]="notFound"></div>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+
+                <hr />
+
+                <div class="accordion" id="modulesAccordian" *ngIf="modules!=null && modules.length>0">
+                  <div class="card" *ngFor="let module of modules; let i = index">
+                    <div class="card-header bg-light" id="heading_{{module.name}}_{{i}}">
+                      <label class="container-checkbox" style="margin-bottom:0;">
+                        <input type="checkbox" [(ngModel)]="module.checked"
+                               (change)="onModulesChecked($event, module)"
+                               [checked]="module.checked" [value]="module.checked">
+                        <span class="checkmark"></span>
+                      </label>
+                      <div class="pl-5 font-weight-bold" (click)="toggleClass='heading_'+module.name+''+i; showRoleChildDiv=false;"
+                           data-toggle="collapse" style="cursor:pointer" [attr.data-target]="'#collapse_'+module.id"
+                           aria-expanded="true" aria-controls="collapseOne">
+                        {{module.name}} <i [ngClass]="toggleClass=='heading_'+module.name+''+i ?'fa-angle-up':'fa-angle-down'"
+                                           class="fa rotate-icon text-muted fa-2x float-right"></i>
+                      </div>
+                    </div>
+
+                    <div id="collapse_{{module.id}}" class="collapse" aria-labelledby="heading" data-parent="#modulesAccordian">
+                      <div class="card-body" *ngIf="module.moduleOperations!=null && module.moduleOperations.length>0">
+                        <div class="col-md-12 pl-5" *ngFor="let moduleOperation of module.moduleOperations; let last = last">
+                          <div *ngIf="moduleOperation.permissions!=null && moduleOperation.permissions.length>0">
+                            <div *ngFor="let permission of moduleOperation.permissions" id="permission_{{permission.id}}">
+                              <label class="container-checkbox" style="font-weight:normal">
+                                <input type="checkbox" [(ngModel)]="permission.checked"
+                                       (change)="onModuleOperationChecked($event, permission)"
+                                       [checked]="moduleOperation.checked" [value]="moduleOperation.checked">
+                                <span class="checkmark"></span> {{moduleOperation.name}} - {{permission.permissions}}
+                              </label>
+                            </div>
+                          </div>
+                          <hr *ngIf="!last && moduleOperation.permissions.length>0" />
+                        </div>
+                        <div class="col-md-12 pl-5" *ngIf="module.moduleOperations.length<=0">
+                          <p class="text-muted"><i class="fa fa-exclamation-triangle text-warning"></i> No Module Operations were found. Check back later.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <button class="btn btn-primary float-right" (click)="create()" *ngIf="userPermissions.includes('addrole')" [disabled]="isSaveLoading">
+                  <span class="spinner-border spinner-border-sm" *ngIf="isSaveLoading"></span> Save
+                </button>
+                <a [routerLink]="['/roles']" class="btn btn-default border-dark mr-2 float-right">Cancel</a>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

@@ -1,0 +1,101 @@
+<div class="login-page hold-transition">
+  <div class="login-box"> 
+    <div class="card card-outline card-primary">
+      <div class="card-header text-center">
+        <p class="h2">
+          <img src="../../../assets/Images/logo.png" height="70" width="70" />
+          <br /><b>User</b> Management 
+        </p>
+        <p class="text-muted">Login to continue</p>
+      </div>
+      <div class="card-body">
+        <p class="login-box-msg text-muted" *ngIf="!isPasswordLogin">
+          <i class="fa fa-info text-primary"></i> Login using registered Phone Number
+        </p>
+        <p class="login-box-msg text-muted" *ngIf="isPasswordLogin">
+          <i class="fa fa-info text-primary"></i> Login using registered Email Id
+        </p>
+        <div class="alert border-danger" *ngIf="hasMessage">
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span><i class="fa fa-exclamation-triangle"></i></span>
+            </div>
+            <p class="form-control border-0 pt-0 pb-0 text-dark mb-0">{{responseMessage}}</p>
+          </div>
+        </div>
+        <form>
+          <div *ngIf="!isPasswordLogin">
+            <div class="input-group mb-3">
+              <input type="tel" id="phoneNumber" [disabled]="isPhoneNumberDisabled" (keyup)="setOTPLoginType()"
+                     maxlength="10" [(ngModel)]="loginModel.phoneNumber"
+                     [ngModelOptions]="{standalone:true}" class="form-control" placeholder="Phone Number">
+              <div class="input-group-append">
+                <button type="button" (click)="sendOTP()" [disabled]="resendButtonDisabled" class="btn btn-sm btn-primary">
+                  {{otpSenderText}}
+                  <span *ngIf="loading" class="spinner-border spinner-border-sm"></span>
+                </button>
+              </div>
+            </div>
+            <div class="input-group mb-3" *ngIf="isVisible">
+              <input type="number" [disabled]="isPhoneNumberDisabled"
+                     [(ngModel)]="loginModel.otp" [ngModelOptions]="{standalone:true}" class="form-control" placeholder="OTP">
+              <div class="input-group-append">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="col-md-12">
+              <p class="OrContent">
+                <span>OR</span>
+              </p>
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="fa fa-envelope"></i>
+                </span>
+              </div>
+              <input type="email" id="txtEmail" [disabled]="isEmailBoxDisabled" (keyup)="setPasswordLoginType()" [(ngModel)]="loginModel.email"
+                     [ngModelOptions]="{standalone:true}" class="form-control" placeholder="Email Address" />
+            </div>
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <div class="input-group-text">
+                  <span class="fas fa-lock"></span>
+                </div>
+              </div>
+              <input type="password" [disabled]="isPasswordBoxDisabled" [(ngModel)]="loginModel.password" [ngModelOptions]="{standalone:true}"
+                     class="form-control" placeholder="Password">
+
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-8">
+              <div class="icheck-primary">
+                <input type="checkbox" id="remember">
+                <label for="remember">
+                  Remember Me
+                </label>
+              </div>
+            </div>
+            <div class="col-4">
+              <button type="button" (click)="verifyOTP()" [disabled]="isSubmitted && signInEnabled" class="btn btn-primary btn-block">
+                Sign In
+                <span class="spinner-border spinner-border-sm" *ngIf="signInloading"></span>
+              </button>
+            </div>
+            <div class="col-12">
+              <p id="timer" class="text-center mt-3 text-muted" style="display:none">Resend OTP in {{counter}}</p>
+            </div>
+          </div>
+        </form>
+
+      </div>
+
+      <!-- /.card-body -->
+    </div>
+  </div>
+</div>

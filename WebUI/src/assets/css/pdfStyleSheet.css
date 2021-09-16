@@ -1,0 +1,126 @@
+body {
+    font-family: Helvetica;
+    line-height: 1.5;
+    font-size: 15pt;
+}
+
+.table {
+    width: 100% !important;
+    border: none;
+}
+
+.title {
+    font-size: 1.5rem;
+    text-align: center;
+    color: red;
+    font-weight: bold;
+}
+
+.logo {
+    width: 6rem;
+}
+
+.thead td:first-child {
+    width: 2rem !important;
+}
+
+.thead td:nth-child(2) {
+    width: 18.7rem !important;
+    padding-left: 6.9rem;
+}
+
+.thead td:nth-child(3) {
+    width: 8.6rem !important;
+}
+
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.separator::before,
+.separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px dashed #000;
+}
+
+.separator:not(:empty)::before {
+    margin-right: .25em;
+}
+
+.separator:not(:empty)::after {
+    margin-left: .25em;
+}
+
+
+/* .tbody td {
+  width: 25% !important;
+} */
+
+.float-right {
+    float: right;
+}
+
+.display-flex {
+    display: flex;
+}
+
+.m-30 {
+    margin-top: 30px;
+}
+
+.font-weight-bold {
+    font-weight: bold;
+}
+
+.border {
+    border: solid;
+    border-width: 1px;
+    padding: 5px;
+}
+
+.border-danger {
+    border-color: red;
+}
+
+.ml-5 {
+    margin-left: 15px;
+}
+
+.mt-5 {
+    margin-top: 20px;
+}
+
+.tbody-span-50 td {
+    width: 50% !important;
+}
+
+.p-5 {
+    padding: 5px;
+}
+
+.mt-1 {
+    margin-top: 1px;
+}
+
+.mb-0 {
+    margin-bottom: 0px
+}
+
+.mt-60 {
+    margin-top: 60px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.hide {
+    display: none;
+}
+
+.show {
+    display: block;
+}

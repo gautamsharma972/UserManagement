@@ -966,6 +966,18 @@ namespace UserManagement.Services
 
         public async Task<ServiceResult> CreateOperations(ModuleOperations operations, ApplicationDbContext db)
         {
+            var operation = await db.ModulesOperations.
+               Include(a => a.Modules).SingleOrDefaultAsync(a => a.Modules.Id == operations.ModuleId && operations.Name.Trim().ToLower() == a.Name.Trim().ToLower());
+            if (operation != null)
+            {
+                return new ServiceResult
+                {
+                    Errors = new List<string>
+                    {
+                        $"Operation with name - '{operations.Name}' already exists. Try again with another name"
+                    }
+                };
+            }
             operations.Modules = await db.Modules.SingleOrDefaultAsync(a => a.Id == operations.ModuleId);
 
             operations.Id = Guid.NewGuid().ToString();
@@ -977,6 +989,19 @@ namespace UserManagement.Services
 
         public async Task<ServiceResult> EditOperations(ModuleOperations operations, ApplicationDbContext db)
         {
+            var checkExitance = await db.ModulesOperations.
+                SingleOrDefaultAsync(a => a.Id != operations.Id && a.Name.Trim().ToLower()
+                == operations.Name.Trim().ToLower());
+            if (checkExitance != null)
+            {
+                return new ServiceResult
+                {
+                    Errors = new List<string>
+                    {
+                        $"Operation with name - '{operations.Name}' already exists. Try again with another name."
+                    }
+                };
+            }
             var operation = await db.ModulesOperations.SingleOrDefaultAsync(a => a.Id == operations.Id);
             if (operation == null)
             {
@@ -1040,6 +1065,21 @@ namespace UserManagement.Services
 
         public async Task<ServiceResult> CreatePermissions(ModulePermission permissions, ApplicationDbContext db)
         {
+            var permission = await db.ModulePermissions.
+               Include(a => a.ModuleOperations).
+               ThenInclude(a => a.Modules)
+               .SingleOrDefaultAsync(a => a.Permissions.Trim().ToLower() == permissions.Permissions.Trim().ToLower() &&
+               a.ModuleOperations.Id == permissions.OperationId);
+            if (permission != null)
+            {
+                return new ServiceResult
+                {
+                    Errors = new List<string>
+                    {
+                        $"Permission already exists with name - '{permissions.Permissions}'. Try again with another name."
+                    }
+                };
+            }
             var id = Guid.NewGuid().ToString();
             await db.ModulePermissions.AddAsync(new ModulePermission
             {
@@ -1055,6 +1095,18 @@ namespace UserManagement.Services
 
         public async Task<ServiceResult> EditPermissions(ModulePermission permissions, ApplicationDbContext db)
         {
+            var permissionExists = await db.ModulePermissions.SingleOrDefaultAsync(a => a.Id != permissions.Id
+           && permissions.Permissions.Trim().ToLower() == a.Permissions.Trim().ToLower());
+            if (permissionExists != null)
+            {
+                return new ServiceResult
+                {
+                    Errors = new List<string>
+                    {
+                        $"Permission with name - '{permissions.Permissions}' already exists. Try again with another"
+                    }
+                };
+            }
             var permission = await db.ModulePermissions.SingleOrDefaultAsync(a => a.Id == permissions.Id);
             if (permission == null)
                 return new ServiceResult

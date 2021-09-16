@@ -1,0 +1,31 @@
+.signInOption-button .showOnHover {
+  visibility: hidden;
+}
+
+.signInOption-button:hover .showOnHover {
+  visibility: visible;
+  transition: 0.5s;
+}
+
+
+.signInOption-button:after {
+  position: absolute;
+  opacity: 0;
+  top: 14px;
+  right: -20px;
+  transition: 0.5s;
+}
+
+.OrContent {
+  width: 100%;
+  text-align: center;
+  border-bottom: 1px solid lightgray;
+  line-height: 0.1em;
+  margin-top:30px;
+  margin-bottom:30px;
+}
+
+  .OrContent span {
+    background: #fff;
+    padding: 0 10px;
+  }

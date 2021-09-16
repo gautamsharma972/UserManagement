@@ -1,0 +1,8 @@
+.showOnHover .editIcon{
+    display:none;
+}
+
+.showOnHover:hover .editIcon {
+    display:inline-flex;
+   
+}

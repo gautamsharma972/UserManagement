@@ -1,0 +1,312 @@
+
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h4 class="m-0">Manage Users</h4>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a [routerLink]="['/']">Dashboard</a></li>
+          <li class="breadcrumb-item"><a [routerLink]="['/users']">Users</a></li>
+          <li class="breadcrumb-item active">Edit User</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="loading">
+  <div class="col-md-12"> <span class="spinner-border spinner-border-sm text-muted"></span> loading...</div>
+</div>
+<section class="content" *ngIf="!loading">
+  <div class="animated fadeIn container-fluid">
+    <div class="row">
+      <div class="col-md-12" *ngIf="!userPermissions.includes('edituser')">
+        <div class="card">
+          <div class="card-body border border-warning">
+            <p class="mb-0">
+              <i class="fa fa-exclamation-triangle"></i> You do not have permission to update user's details. Contact
+              your Administrator to get access.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12" [appDisable]="!userPermissions.includes('edituser')">
+        <div class="card">
+          <div class="card-header bg-white">
+            <h5>
+              {{user.firstName}} {{user.lastName}}
+            </h5>
+            <p class="text-muted"><span class="text-danger">*</span> marked fields are mandatory</p>
+
+          </div>
+          <div class="card-body">
+            <form #formEditUser ngNativeValidate autocomplete="off">
+
+              <div class="form-group row">
+                <div *ngIf="error.length>0" class="col-md-12">
+                  <div *ngFor="let msg of error">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                      <i class="fa fa-exclamation-triangle"></i> {{msg}}
+                      <button type="button" class="close text-light" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="clearfix"></div>
+                <div class="col-md-3 col-sm-12">
+                  <label>First Name<span class="text-danger">*</span></label>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">
+                        <i class="fa fa-user"></i>
+                      </span>
+                    </div>
+                    <input required type="text" class="form-control" pattern="[A-Z a-z]+"
+                           placeholder="First Name" oninput="this.setCustomValidity('');"
+                           oninvalid="this.setCustomValidity('Provide a valid First Name.\n Only Alphabets are allowed');"
+                           aria-label="FirstName" aria-describedby="basic-addon1" id="fName"
+                           [(ngModel)]="user.firstName" [ngModelOptions]="{standalone:true}">
+                  </div>
+
+                </div>
+                <div class="col-md-3 col-sm-12">
+                  <label>Last Name<span class="text-danger">*</span></label>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon1">
+                        <i class="fa fa-user"></i>
+                      </span>
+                    </div>
+                    <input required type="text" pattern="[A-Z a-z]+" class="form-control" placeholder="Last Name"
+                           aria-label="LastName" aria-describedby="basic-addon2" id="lName"
+                           oninput="this.setCustomValidity('');"
+                           oninvalid="this.setCustomValidity('Provide a valid Last Name.\n Only Alphabets are allowed.');"
+                           [(ngModel)]="user.lastName" [ngModelOptions]="{standalone:true}">
+                  </div>
+                </div>
+                <div class="col-md-3 col-sm-12">
+                  <label>Phone Number</label>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text" id="basic-addon2">
+                        <i class="fa fa-phone"></i>
+                      </span>
+                    </div>
+                    <input type="tel" maxlength="10" class="form-control" placeholder="PhoneNumber"
+                           pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
+                           autocomplete="off"
+                           oninput="this.setCustomValidity('');"
+                           oninvalid="this.setCustomValidity('Provide a valid Phone Number\n Length: 10 digits');"
+                           aria-label="Username" aria-describedby="basic-addon2" id="phNumber"
+                           [(ngModel)]="user.phoneNumber" [ngModelOptions]="{standalone:true}">
+                  </div>
+                </div>
+
+                <div class="col-md-3 col-sm-12">
+                  <label>Email</label>
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fa fa-envelope"></i>
+                      </span>
+                    </div>
+                    <input class="form-control" id="txtEmail" type="email" placeholder="Email Id" [(ngModel)]="user.email"
+                           autocomplete="off"
+                           (keyup)="validateEmail(user.email)" [ngModelOptions]="{standalone:true}" />
+                  </div>
+                  <span class="text-danger mb-3" id="lblEmailError" *ngIf="hasEmailError">Provide a valid Email Address</span>
+                </div>
+
+                <div class="col-md-3 col-sm-12">
+                  <label>Password</label>
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text">
+                        <i class="fa fa-lock"></i>
+                      </span>
+                    </div>
+                    <input class="form-control" id="txtPassword" type="password" placeholder="Update Password"
+                           autocomplete="off"
+                           [ngModelOptions]="{standalone:true}" [(ngModel)]="user.password" />
+
+                  </div>
+                  <password-strength-meter [password]="user.password"></password-strength-meter>
+                </div>
+
+                <div class="col-md-3 col-sm-12">
+                  <label>Active Status</label>
+                  <div class="input-group mb-3">
+                    <label class="container-checkbox mt-2" style="margin-bottom:0; font-weight:normal">
+                      <input type="checkbox" [(ngModel)]="user.isActive" [ngModelOptions]="{standalone:true}"
+                             [checked]="user.isActive" [value]="user.isActive">
+                      <span class="checkmark"></span> Active
+                    </label>
+
+                  </div>
+                </div>
+
+                <div class="col-md-12 mt-3">
+                  <h6 class="font-weight-bold">
+                    Assign Roles
+                  </h6>
+                  <p class="text-muted mb-0">
+                    Choose applicable Roles for user.
+                    <span class="float-right" *ngIf="userPermissions.includes('addrole')">
+                      <i class="fa fa-info"></i> Role not listed?
+                      <a class="text-primary" [routerLink]="['/roles/create']">Add new Role</a>
+                    </span>
+                  </p>
+                  <hr />
+                </div>
+
+                <div class="col-md-12">
+
+                  <div class="accordion" id="rolesAccordian">
+
+                    <div class="card">
+                      <div class="card-header bg-light" id="headingRole">
+                        <div class="font-weight-bold" (click)="showRoleChildDiv = !showRoleChildDiv"
+                             data-toggle="collapse" style="cursor:pointer" data-target="'#collapseRole"
+                             aria-expanded="true" aria-controls="collapseOne">
+                          Roles
+                          <span style="font-weight:normal" class="float-right">
+                            <span class="text-muted">Selected: </span>
+                            <span *ngFor="let role of roles; let rLast = last">
+                              <span *ngIf="role.checked">{{role.name}}<span *ngIf="!rLast">, </span></span>
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                      <div id="collapseRole" class="collapse animated" [ngClass]="showRoleChildDiv? 'show in':'fade out'" aria-labelledby="headingRole" data-parent="#rolesAccordian">
+                        <div class="card-body">
+                          <div class="col-md-12" *ngFor="let item of roles; let last = last">
+                            <label class="container-checkbox" style="margin-bottom:0;">
+                              <input type="checkbox" [(ngModel)]="item.checked"
+                                     [ngModelOptions]="{standalone:true}"
+                                     [checked]="item.checked" [value]="item.checked"
+                                     (change)="onRoleCheckboxChange(item, $event)">
+                              <span class="checkmark"></span> {{item.name}}
+                              <span style="font-weight:normal">
+                                <span class="text-muted"> | Permissions:</span>
+                                <span *ngIf="item.permissionLabel !=''">
+                                  {{item.permissionLabel}}
+                                </span>
+                                <span *ngIf="item.permissionLabel == ''" class="text-muted">
+                                  &nbsp;&nbsp;<i class="fa fa-exclamation-triangle text-warning"></i> No permission provided.
+                                </span>
+                              </span>
+                            </label>
+
+                            <hr *ngIf="!last" />
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <div class="mt-3 col-md-12">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div class="form-group row mb-0">
+                        <div class="col-md-7 mb-0">
+                          <h6 class="font-weight-bold">User Permissions</h6>
+                          <p class="text-muted mb-0">Choose applicable permissions for user.</p>
+                        </div>
+                        <div class="col-md-5 mb-0">
+                          <div class="ng-autocomplete w-100" style="margin-bottom:0; padding-bottom:0">
+                            <ng-autocomplete [data]="permissions"
+                                             style="box-shadow:none; font-size:1rem; height:auto; font-family:FontAwesome Free"
+                                             placeholder="Search Permissions"
+                                             [searchKeyword]="keyword"
+                                             (selected)='selectEvent($event)'
+                                             (inputChanged)='onChangeSearch($event)'
+                                             (inputFocused)='onFocused($event)'
+                                             [itemTemplate]="itemTemplate"
+                                             [notFoundTemplate]="notFoundTemplate">
+                            </ng-autocomplete>
+
+                            <ng-template #itemTemplate let-item>
+                              <p class="mt-2">
+                                <label class="container-checkbox" style="font-weight:normal">
+                                  <input type="checkbox" [(ngModel)]="item.checked">
+                                  <span class="checkmark"></span> {{item.moduleOperations.modules.name}} / {{item.moduleOperations.name}} /
+                                  <span [innerHtml]="item.permissions"></span>
+                                </label>
+                              </p>
+                            </ng-template>
+
+                            <ng-template #notFoundTemplate let-notFound>
+                              <div [innerHTML]="notFound"></div>
+                            </ng-template>
+                          </div>
+                        </div>
+                      </div>
+
+                      <hr />
+                      <div class="accordion" id="modulesAccordian" *ngIf="modules!=null && modules.length>0">
+                        <div class="card" *ngFor="let module of modules; let i = index">
+                          <div class="card-header bg-light" id="heading_{{module.name}}_{{i}}">
+                            <label class="container-checkbox" style="margin-bottom:0;">
+                              <input type="checkbox" [(ngModel)]="module.checked"
+                                     [ngModelOptions]="{standalone:true}"
+                                     (change)="onModulesChecked(module, $event)"
+                                     [checked]="module.checked" [value]="module.checked">
+                              <span class="checkmark"></span>
+                            </label>
+                            <div class="pl-5 font-weight-bold" (click)="toggleClass='heading_'+module.name+''+i; showRoleChildDiv=false;"
+                                 data-toggle="collapse" style="cursor:pointer" [attr.data-target]="'#collapse_'+module.id"
+                                 aria-expanded="true" aria-controls="collapseOne">
+                              {{module.name}} <i [ngClass]="toggleClass=='heading_'+module.name+''+i ?'fa-angle-up':'fa-angle-down'"
+                                                 class="fa rotate-icon text-muted fa-2x float-right"></i>
+                            </div>
+                          </div>
+
+                          <div id="collapse_{{module.id}}" class="collapse" aria-labelledby="heading" data-parent="#modulesAccordian">
+                            <div class="card-body" *ngIf="module.moduleOperations!=null && module.moduleOperations.length>0">
+                              <div class="col-md-12 pl-5" *ngFor="let moduleOperation of module.moduleOperations; let last = last">
+                                <div *ngIf="moduleOperation.permissions!=null && moduleOperation.permissions.length>0">
+                                  <div *ngFor="let permission of moduleOperation.permissions" id="permission_{{permission.id}}">
+                                    <label class="container-checkbox" style="font-weight:normal">
+                                      <input type="checkbox" [(ngModel)]="permission.checked"
+                                             [ngModelOptions]="{standalone:true}"
+                                             (change)="onModuleOperationChecked($event, permission)"
+                                             [checked]="moduleOperation.checked" [value]="moduleOperation.checked">
+                                      <span class="checkmark"></span> {{moduleOperation.name}} - {{permission.permissions}}
+                                    </label>
+                                  </div>
+                                </div>
+                                <hr *ngIf="!last && moduleOperation.permissions.length>0" />
+                              </div>
+                              <div class="col-md-12 pl-5" *ngIf="module.moduleOperations.length<=0">
+                                <p class="text-muted"><i class="fa fa-exclamation-triangle text-warning"></i> No Module Operations were found. Check back later.</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-md-12 mt-3">
+                  <button class="btn btn-primary float-right" *ngIf="userPermissions.includes('edituser')"
+                          (click)="formEditUser.checkValidity()? save():null" [disabled]="isSaveLoading">
+                    <span class="spinner-border spinner-border-sm" *ngIf="isSaveLoading"></span> Save
+                  </button>
+                  <a [routerLink]="['/users']" class="btn btn-default border-dark mr-2 float-right">Cancel</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>

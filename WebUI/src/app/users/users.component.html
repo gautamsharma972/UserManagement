@@ -1,0 +1,79 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h4 class="m-0">Manage Users</h4>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a [routerLink]="['/']">Dashboard</a></li>
+          <li class="breadcrumb-item active">Users</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="loading">
+  <div class="col-md-12"> <span class="spinner-border spinner-border-sm text-muted"></span> loading...</div>
+</div>
+<section class="content" *ngIf="!loading">
+  <div class="animated fadeIn container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card ui-sortable-handle shadow shadow-sm">
+          <div class="card-header">
+            <div class="card-tools">
+              <button *ngIf="permissions.includes('adduser')" class="btn btn-primary"
+                      [routerLink]="['/users/create']">
+                <i class="fa fa-plus"></i>  Add User
+              </button>
+            </div>
+            <h5>
+              <a href="javascript:void(0);" class="text-dark" [routerLink]="['/users']">Users</a>
+            </h5>
+            <small class="text-muted">Click on any User to edit them.</small>
+
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3">
+                <div class="input-group mb-3">
+                  <input class="form-control" type="search" [(ngModel)]="filterSearch"
+                         placeholder="Search"
+                         aria-label="Search" [ngModelOptions]="{standalone: true}">
+                  <div class="input-group-append">
+                    <span class="input-group-text"><i class="fa fa-search"></i></span>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-12 mb-10" *ngIf="users.length>0">
+                <app-users-list [users]="users"
+                                [limitTo]="20"
+                                [showPageLimit]="'true'"
+                                [showPagination]="'true'"
+                                [permissions]="permissions"
+                                [showUserType]="'true'"
+                                [roles]="roles"
+                                [showOperations]="'true'"
+                                [filterSearch]="filterSearch">
+                </app-users-list>
+              </div>
+
+              <div class="col-md-12 mb-10" *ngIf="users.length<=0">
+                <div class="">
+                  <p class="text-left">
+                    No users were found!
+                    <a class="text-primary" *ngIf="permissions.includes('adduser')" [routerLink]="['/users/create']">Add new?</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+

@@ -4,10 +4,14 @@
     <TargetFramework>net5.0</TargetFramework>
 <IsPackable>true</IsPackable>
 <Company>Shakyens</Company>
-<Product>UserManagement v2</Product>
-<Version>2.0.0</Version>
+<Product>User Management</Product>
+<Version>3.0.1</Version>
 <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 <PackageId>shakyens.usermanagementv2</PackageId>
+<PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+<Authors>Gautam Sharma</Authors>
+<Description>Manage Users, Roles and Project Modules with their respective access permissions, contains only APIs, returns respective permissions for particular users based on their Role.</Description>
+<Copyright>Gautam Sharma</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

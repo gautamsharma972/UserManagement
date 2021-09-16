@@ -1,0 +1,59 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h4 class="m-0">Manage Roles</h4>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a [routerLink]="['/']">Dashboard</a></li>
+          <li class="breadcrumb-item active"><a [routerLink]="['roles']">Roles</a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="loading">
+  <span class="spinner-border spinner-border-sm text-muted"></span> loading...
+</div>
+<section class="content" *ngIf="!loading">
+  <div class="animated fadeIn container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header">
+            <h5>
+              Roles
+              <button class="btn btn-primary float-sm-right" *ngIf="permissions.includes('addrole')"
+                      [routerLink]="['/roles/create']">
+                <i class="fa fa-plus"></i> Add Role
+              </button>
+            </h5>
+            <p class="text-muted mb-0" style="font-size:small">Click on any Role to edit them.</p>
+          </div>
+          <div class="card-body">
+            <div class="col-lg-12">
+              <app-roles-list [roles]="roles"
+                              [limitTo]="10"
+                              [showRowCounts]="'true'"
+                              [permissions]="permissions"
+                              [filterSearch]="filterRoleSearch"
+                              [showUsersCount]="'true'"
+                              [showPagination]="'true'">
+              </app-roles-list>
+              <div class="col-md-12" *ngIf="roles.length<=0">
+
+                <p class="border-info alert">
+                  <i class="fa fa-exclamation-triangle"></i> No Roles were found,
+                  <a *ngIf="permissions.includes('addrole')" href="javascript:void(0);" class="text-primary"
+                     [routerLink]="['/roles/create']">add new?</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+

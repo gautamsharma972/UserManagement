@@ -1,0 +1,374 @@
+<div class="content-header">
+  <div class="container-fluid">
+    <div class="row mb-2">
+      <div class="col-sm-6">
+        <h4 class="m-0">Manage Modules & Permissions</h4>
+      </div>
+      <div class="col-sm-6">
+        <ol class="breadcrumb float-sm-right">
+          <li class="breadcrumb-item"><a [routerLink]="['/']">Dashboard</a></li>
+          <li class="breadcrumb-item"><a>Modules</a></li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="loading">
+  <span class="spinner-border spinner-border-sm text-muted"></span> loading...
+</div>
+<section class="content" *ngIf="!loading">
+  <div class="animated fadeIn container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <a class="nav-link active shadow-sm" id="moduleMenu" data-toggle="tab" href="#modules" role="tab" aria-controls="modules"><b>Modules</b></a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link shadow-sm" id="operationMenu" data-toggle="tab" href="#operations" (click)="getOperations()" role="tab" aria-controls="Operations"><b>Operations</b></a>
+          </li>
+          <li class="nav-item" role="presentation">
+            <a class="nav-link shadow-sm" id="permissionsTab" data-toggle="tab" href="#permissions" role="tab" aria-controls="permissions"><b>Map Permissions</b></a>
+          </li>
+        </ul>
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="modules" role="tabpanel" aria-labelledby="home-tab">
+            <div class="card border border-top-0 shadow-none pt-3">
+              <div class="card-body">
+
+                <div class="form-group row">
+                  <div class="col-md-7 col-sm-12">
+                    <div class="pr-3">
+                      <p class="text-muted">Click on 'Edit Icon' to edit a Module.</p>
+                      <hr />
+                      <div class="pb-1" *ngFor="let module of modulesList; let index = index">
+
+                        <p class="font-weight-bold">
+                          <span style="cursor:pointer;" (click)="editModule(module)">
+                            <span class="text-muted">{{index +1}}.</span> {{module.name}}
+                          </span>
+                          <span class="hoverIcon float-right" style="cursor:pointer" (click)="deleteModule(module)">
+                            <i class="fa fa-trash text-danger"></i>
+                          </span>
+                          <span class="float-right mr-2">
+                            <i class="fa fa-edit text-primary" style="cursor:pointer" (click)="editModule(module)"></i>
+                          </span>
+                        </p>
+                        <hr />
+                      </div>
+                      <p *ngIf="modulesList.length<=0" class="text-muted"><i class="fa fa-exclamation-triangle text-warning"></i> No Modules were found. Use the right section to add new</p>
+                    </div>
+
+                  </div>
+                  <div class="col-md-5 col-sm-12">
+                    <div class="card">
+                      <div class="card-body shadow-sm" [ngClass]="isModuleEdit? 'border border-primary':''">
+                        <div class="col-md-12">
+                          <h5>{{isModuleEdit? 'Edit':'Add'}} Module</h5>
+                          <hr />
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                          <label>Module Name<span class="text-danger">*</span></label>
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1">
+                                <i class="fa fa-info"></i>
+                              </span>
+                            </div>
+                            <input (keypress)="verifyName($event)" required type="text" id="txtModuleName" class="form-control" placeholder="Module Name"
+                                   aria-label="name" aria-describedby="basic-addon1"
+                                   [(ngModel)]="modules.name" [ngModelOptions]="{standalone:false}">
+                          </div>
+
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-sm-12"></div>
+                        <div class="col-sm-12">
+                          <label>Description</label>
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1">
+                                <i class="fa fa-list"></i>
+                              </span>
+                            </div>
+                            <textarea required type="text" class="form-control" id="txtDescriptionModule" placeholder="Description for this Module."
+                                      aria-label="name" aria-describedby="basic-addon1" style="max-height:150px; height:150px"
+                                      [(ngModel)]="modules.description" [ngModelOptions]="{standalone:false}"></textarea>
+                          </div>
+
+                        </div>
+
+                        <div class="col-md-12">
+                          <hr />
+                          <button class="btn btn-primary float-right" (click)="addModule()" [disabled]="isSaveLoading">
+                            <span class="spinner-border spinner-border-sm" *ngIf="isSaveLoading"></span> {{isModuleEdit? 'Update':'Create'}}
+                          </button>
+                          <a href="javascript:void(0);" (click)="cancelModuleEdit()" class="btn btn-default border-dark mr-2 float-right">Cancel</a>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="tab-pane fade" id="operations" role="tabpanel" aria-labelledby="operations-tab">
+
+            <div class="card border border-top-0 shadow-none pt-3">
+              <div class="card-body">
+                <div class="form-group row">
+                  <div class="col-md-7 col-sm-12">
+                    <div class="pr-3">
+                      <p class="text-muted">Click on 'Edit Icon' to edit an Operation.</p>
+                      <hr />
+                      <div class="pb-1" *ngFor="let operation of operations; let index = index">
+
+                        <span class="font-weight-bold">
+                          <span style="cursor:pointer;" (click)="editOperation(operation)">
+                            <span class="text-muted">{{index +1}}.</span> {{operation.name}}<br />
+                            <span *ngIf="operation.modules!=null" style="font-weight:normal"><span class="text-muted">Module:</span> {{operation.modules.name}}</span>
+                            <span *ngIf="operation.modules==null" style="font-weight:normal"><span class="text-muted">No Module assigned</span></span>
+                          </span>
+                          <span class="hoverIcon float-right" style="cursor:pointer" (click)="deleteOperation(operation)">
+                            <i class="fa fa-trash text-danger"></i>
+                          </span>
+                          <span class="float-right mr-2">
+                            <i class="fa fa-edit text-primary" style="cursor:pointer" (click)="editOperation(operation)"></i>
+                          </span>
+                        </span>
+                        <hr />
+                      </div>
+                      <p *ngIf="operations.length<=0" class="text-muted"><i class="fa fa-exclamation-triangle text-warning"></i> No Operations were found. Use the right section to add new</p>
+                    </div>
+
+                  </div>
+                  <div class="col-md-5 col-sm-12">
+                    <div class="card">
+                      <div class="card-body shadow-sm" [ngClass]="isOperationEdit? 'border border-primary':''">
+                        <div class="col-md-12">
+                          <h5>{{isOperationEdit? 'Edit':'Add'}} Operation</h5>
+                          <hr />
+                        </div>
+                        <div *ngIf="error.length>0" class="col-md-12">
+                          <div *ngFor="let msg of error">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                              <i class="fa fa-exclamation-triangle"></i> {{msg}}
+                              <button type="button" class="close text-light" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                          <label>
+                            Select Module<span class="text-danger">*</span>
+                          </label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1">
+                                <i class="fa fa-info"></i>
+                              </span>
+                            </div>
+                            <select class="form-control" id="selectOpModule" [(ngModel)]="operationModel.moduleId" required
+                                    (change)="selectedModuleChanged($event)">
+                              <option value="-1" selected disabled>Select</option>
+                              <option *ngFor="let module of modulesList" [value]="module.id">
+                                {{module.name}}
+                              </option>
+                            </select>
+                          </div>
+
+                          <p class="text-primary mb-3 w-100" style="font-weight:normal; cursor:pointer"
+                             (click)="showModuleTab()">Module not listed? Add here</p>
+
+                        </div>
+                        <div class="col-sm-12 col-md-8">
+                          <label>Operation Name<span class="text-danger">*</span></label>
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="fa fa-info"></i>
+                              </span>
+                            </div>
+                            <input class="form-control" (keypress)="verifyName($event)" required id="txtOperationName"
+                                   [(ngModel)]="operationModel.name" placeholder="Operation Name" />
+                          </div>
+
+                        </div>
+                        <div class="clearfix"></div>
+                        <div class="col-sm-12"></div>
+                        <div class="col-sm-12">
+                          <label>Description</label>
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text" id="basic-addon1">
+                                <i class="fa fa-list"></i>
+                              </span>
+                            </div>
+                            <textarea required type="text" class="form-control" placeholder="Description for this Module."
+                                      aria-label="name" aria-describedby="basic-addon1" style="max-height:150px; height:150px"
+                                      [(ngModel)]="operationModel.description" [ngModelOptions]="{standalone:false}"></textarea>
+                          </div>
+                        </div>
+
+                        <div class="col-md-12">
+                          <hr />
+                          <button class="btn btn-primary float-right" (click)="addOperation()" [disabled]="isSaveLoading">
+                            <span class="spinner-border spinner-border-sm" *ngIf="isSaveLoading"></span> {{isOperationEdit? 'Update':'Create'}}
+                          </button>
+                          <a href="javascript:void(0);" (click)="cancelAddOperation()" class="btn btn-default border-dark mr-2 float-right">Cancel</a>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="tab-pane fade" id="permissions" role="tabpanel" aria-labelledby="permissions">
+            <div class="card border border-top-0 shadow-none pt-3">
+              <div class="card-body">
+
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="alert border-primary">
+                      <p class="mb-0"><i class="fa fa-info text-primary"></i> Select Module and Operation to list and to create Permissions.</p>
+                    </div>
+                  </div>
+                  <div class="col-md-7 pr-3">
+                    <div class="form-group row">
+                      <div class="col-md-6 col-sm-12">
+                        <label>
+                          Select Module<span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">
+                              <i class="fa fa-info"></i>
+                            </span>
+                          </div>
+                          <select class="form-control" id="selectModule" [(ngModel)]="permissionModel.moduleId"
+                                  required (change)="getModuleOperations($event)">
+                            <option value="-1" selected disabled>Select</option>
+                            <option *ngFor="let module of modulesList" [value]="module.id">
+                              {{module.name}}
+                            </option>
+                          </select>
+                        </div>
+
+                        <p class="text-primary mb-3 w-100" style="font-weight:normal; cursor:pointer"
+                           (click)="showModuleTab()">Module not listed? Add here</p>
+
+                      </div>
+                      <div class="col-md-6 col-sm-12">
+                        <label>Select Operation<span class="text-danger">*</span></label>
+                        <div class="input-group">
+                          <div class="input-group-prepend">
+                            <span class="input-group-text" id="basicaddon2">
+                              <i class="fa fa-list"></i>
+                            </span>
+                          </div>
+                          <select class="form-control" id="selectOperation"
+                                  [(ngModel)]="permissionModel.operationId" required
+                                  (change)="showPermissions = true; filterPermission(permissionModel.operationId)">
+                            <option value="-1" selected disabled>Select</option>
+                            <option *ngFor="let operation of permissionsOperations" [value]="operation.id">
+                              {{operation.name}}
+                            </option>
+                          </select>
+                        </div>
+                        <p class="text-primary mb-3 w-100" style="font-weight:normal; cursor:pointer"
+                           (click)="showOperationTab()">Operation not listed? Add here</p>
+                      </div>
+                      <div class="clearfix"></div>
+
+                      <div class="col-md-12 mt-3" *ngIf="showPermissions">
+                        <h6>Assigned Permissions</h6>
+                        <hr />
+                        <div *ngFor="let permission of permissionSelected; let index = index">
+                          <p>
+                            <b class="w-100" style="cursor:pointer;" (click)="editPermission(permission)">
+                            <span class="text-muted" style="font-weight:normal">{{index+1}}.</span> {{permission.permissions}}</b>
+
+                            <span class="float-right">
+                              <i class="fa fa-trash text-danger" (click)="deletePermission(permission)"></i>
+                            </span>
+                            <span class="float-right mr-2">
+                              <i class="fa fa-edit text-primary" (click)="editPermission(permission)"></i>
+                            </span>
+                          </p>
+                          <hr />
+                        </div>
+
+                      </div>
+                      <div *ngIf="showPermissions && permissionSelected.length<=0">
+                        <p class="text-muted"><i class="fa fa-exclamation-triangle text-warning"></i> No Permissions allocated. Use the right form to create one!</p>
+                      </div>
+
+                    </div>
+                  </div>
+                  <div class="col-md-5">
+                    <div class="card shadow shadow-sm" [ngClass]="permissionEdit? 'border border-primary':''">
+                      <div class="card-body">
+                        <div class="col-md-12">
+                          <h5>{{permissionEdit?'Edit':'Add new'}} Permission</h5>
+                          <hr />
+                        </div>
+                        <div class="col-md-7">
+                          <label>Permission<span class="text-danger">*</span></label>
+                          <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="fa fa-lock"></i>
+                              </span>
+                            </div>
+                            <input class="form-control" id="txtPermissions" (keypress)="verifyName($event)"
+                                   [(ngModel)]="permissionModel.permissions" placeholder="e.g. Save Users" />
+                          </div>
+                        </div>
+                        <div class="col-md-12">
+                          <label>Description</label>
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">
+                                <i class="fa fa-lock"></i>
+                              </span>
+                            </div>
+                            <textarea class="form-control" style="max-height:150px; height:150px"
+                                      [(ngModel)]="permissionModel.description" [ngModelOptions]="{standalone:false}"
+                                      placeholder="Description for this Permission"></textarea>
+                          </div>
+                        </div>
+                        <div class="col-md-12">
+                          <hr />
+
+                          <button class="btn btn-primary float-right" (click)="createPermissions()" type="button">
+                            <span *ngIf="isSaveLoading" class="spinner-border spinner-border-sm"></span>
+                            {{permissionEdit? 'Update':'Save'}}
+                          </button>
+                          <button class="btn btn-secondary float-right mr-2" (click)="cancelAddPermission()">Cancel</button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>

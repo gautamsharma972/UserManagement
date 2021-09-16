@@ -1,0 +1,377 @@
+/* You can add global styles to this file, and also import other style files */
+@media (min-width: 768px) {
+  body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .content-wrapper, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-footer, body:not(.sidebar-mini-md):not(.sidebar-mini-xs):not(.layout-top-nav) .main-header {
+    transition: margin-left .3s ease-in-out;
+    margin-left: 78px;
+  }
+}
+
+.hidden-custom {
+  display: none;
+}
+
+/* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+}
+
+
+table tbody tr .form-control {
+  height: 30px !important;
+  padding: 0.1rem 0.6em;
+}
+
+.dp-picker-input {
+  border: 1px solid #80808047;
+  border-radius: 5px;
+  padding-left: 10px;
+  font-size: 15px !important;
+}
+
+.editIcon {
+  display: none;
+}
+
+.showOnHover:hover > .editIcon {
+  display: block;
+}
+
+.container-checkbox {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+  /* Hide the browser's default checkbox */
+  .container-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+/* Create a custom checkbox */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #fff;
+  border-color: black;
+  border: solid 1px darkgray;
+}
+
+/* On mouse-over, add a grey background color */
+.container-checkbox:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.container-checkbox input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.container-checkbox input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the checkmark/indicator */
+.container-checkbox .checkmark:after {
+  left: 9px;
+  top: 5px;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+
+.autocomplete-container .input-container input {
+  font-size: 1rem;
+  box-sizing: border-box;
+  border: none;
+  box-shadow: none;
+  outline: 0;
+  background-color: #fff;
+  color: rgba(0,0,0,.87);
+  width: 100%;
+  padding: 0 15px;
+  line-height: 40px;
+  height: auto;
+}
+
+.autocomplete-container {
+  box-shadow: none;
+  position: relative;
+  overflow: visible;
+  height: auto;
+  border: 1px solid #ced4da;
+}
+
+
+  .autocomplete-container .autocomplete-container .active {
+    box-shadow: none;
+    position: relative;
+    overflow: visible;
+    height: auto;
+    border: 1px solid #ced4da;
+  }
+
+  .autocomplete-container .suggestions-container {
+    position: absolute;
+    width: 100%;
+    background: #fff;
+    height: auto;
+    padding-left: 15px;
+    box-shadow: 0 2px 5px rgb(0 0 0 / 25%);
+    box-sizing: border-box;
+  }
+
+.suggestions-container ul li:hover {
+  background-color: #fff;
+}
+
+.suggestions-container .is-hidden {
+  display: none;
+  padding-left: 0;
+}
+
+.autocomplete-container .suggestions-container > ul {
+  padding-top: 15px;
+  margin: 0;
+  max-height: 240px;
+  overflow-y: auto;
+  padding-left: 0;
+}
+
+.divHighlight {
+  background-color: lightblue;
+  padding-top: 5px;
+  padding-bottom: 1px;
+  border-radius: 5px;
+  padding-left: 5px;
+}
+
+.disabled {
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
+.bg-light {
+  background-color: #f4f6f9 !important;
+}
+
+.switch {
+  display: inline-block;
+  height: 25px;
+  position: relative;
+  width: 50px;
+}
+
+  .switch input {
+    display: none;
+  }
+
+.slider {
+  background-color: #ccc;
+  bottom: 0;
+  cursor: pointer;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+  transition: .4s;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+.slider:before {
+  background-color: #fff;
+  bottom: 4px;
+  content: "";
+  height: 18px;
+  left: 4px;
+  position: absolute;
+  transition: .4s;
+  width: 17px;
+}
+
+input:checked + .slider {
+  background-color: #66bb6a;
+}
+
+  input:checked + .slider:before {
+    transform: translateX(26px);
+  }
+
+.slider.round {
+  border-radius: 34px;
+}
+
+  .slider.round:before {
+    border-radius: 50%;
+  }
+/*******************************
+* MODAL AS LEFT/RIGHT SIDEBAR
+* Add "left" or "right" in modal parent div, after class="modal".
+* Get free snippets on bootpen.com
+*******************************/
+.modal.left .modal-dialog,
+.modal.right .modal-dialog {
+  position: fixed;
+  margin: auto;
+  width: 450px;
+  height: 100%;
+  -webkit-transform: translate3d(0%, 0, 0);
+  -ms-transform: translate3d(0%, 0, 0);
+  -o-transform: translate3d(0%, 0, 0);
+  transform: translate3d(0%, 0, 0);
+}
+
+.modal.left .modal-content,
+.modal.right .modal-content {
+  height: 100%;
+  overflow-y: auto;
+}
+
+.modal.left .modal-body,
+.modal.right .modal-body {
+  padding: 15px 15px 80px;
+}
+
+/*Left*/
+.modal.left.fade .modal-dialog {
+  left: -320px;
+  -webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+  -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+  -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+  transition: opacity 0.3s linear, left 0.3s ease-out;
+}
+
+.modal.left.fade.in .modal-dialog {
+  left: 0;
+}
+
+/*Right*/
+.modal.right.fade .modal-dialog {
+  right: 0;
+  -webkit-transition: opacity 0.3s linear, right 0.3s ease-out;
+  -moz-transition: opacity 0.3s linear, right 0.3s ease-out;
+  -o-transition: opacity 0.3s linear, right 0.3s ease-out;
+  transition: opacity 0.3s linear, right 0.3s ease-out;
+}
+
+.modal.right.fade.in .modal-dialog {
+  right: 0;
+}
+
+/* ----- MODAL STYLE ----- */
+.modal-content {
+  border-radius: 0;
+  border: none;
+}
+
+.modal-header {
+  border-bottom-color: #EEEEEE;
+  background-color: #FAFAFA;
+}
+
+.notifier__container * {
+  box-sizing: border-box;
+}
+
+.notifier__container-list {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-left: 0;
+  list-style-type: none;
+}
+
+.notifier__notification {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  visibility: hidden;
+  z-index: 10000;
+  will-change: transform;
+  backface-visibility: hidden;
+  background: #28a745 !important;
+  color: white;
+}
+
+.notifier__notification--material {
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  cursor: default;
+  padding-top: 11px;
+  padding-right: 26px;
+  padding-bottom: 10px;
+  padding-left: 26px;
+}
+
+  .notifier__notification--material .notifier__notification-message {
+    display: inline-block;
+    margin-top: 0;
+    margin-bottom: 0;
+    vertical-align: top;
+    line-height: 32px;
+    font-size: 15px;
+  }
+
+  .notifier__notification--material .notifier__notification-button {
+    display: inline-block;
+    transition: opacity 0.2s ease;
+    opacity: 0.5;
+    margin-right: -10px;
+    margin-left: 10px;
+    outline: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 6px;
+    width: 32px;
+    height: 32px;
+    vertical-align: top;
+  }
+
+.notifier__notification--material .notifier__notification-button:hover, .notifier__notification--material .notifier__notification-button:focus {
+  opacity: 1;
+}
+
+.notifier__notification--material .notifier__notification-button:active {
+  transform: scale(0.82);
+  opacity: 1;
+}
+
+[app-disabled] {
+  opacity: 0.96;
+  pointer-events: none;
+}

@@ -1,0 +1,49 @@
+<div class="sidebar sidebar-custom" id="sidebar" *ngIf="!isLoginPage">
+  <div class="logo-details">
+    <i class='bx bxs-user icon'></i>
+    <div class="logo_name">User Management</div>
+    <i class='bx bx-menu' id="btn" (click)="isCollapsed=!isCollapsed; setHeader(); toggleMenu();"></i>
+  </div>
+  <ul class="nav-list">
+    <li>
+      <a href="#" [routerLink]="['/']">
+        <i class='bx bx-grid-alt'></i>
+        <span class="links_name">Dashboard</span>
+      </a>
+      <span class="tooltip">Summary view</span>
+    </li>
+
+    <li *ngIf="permissions.includes('manageroles')">
+      <a href="#" [routerLink]="['/roles']">
+        <i class='bx bx-list-ul'></i>
+        <span class="links_name">Roles</span>
+      </a>
+      <span class="tooltip">Manage all Roles</span>
+    </li>
+    <li *ngIf="permissions.includes('manageusers')">
+      <a href="#" [routerLink]="['/users']">
+        <i class='bx bxs-user'></i>
+        <span class="links_name">Users</span>
+      </a>
+      <span class="tooltip">Manage all users</span>
+    </li>
+    <li *ngIf="permissions.includes('managemodules')">
+      <a href="#" [routerLink]="['/modules']">
+        <i class='bx bx-cog'></i>
+        <span class="links_name">Modules & Permissions</span>
+      </a>
+      <span class="tooltip">Manage Project Modules & their Permissions</span>
+    </li>
+    <li class="profile">
+      <div class="profile-details" style="cursor:pointer" [routerLink]="['/users/edit', user.id]">
+        <i class="bx bxs-user icon"></i>
+        <div class="name_job">
+          <div class="name">{{user.firstName}} {{user.lastName}}</div>
+        </div>
+      </div>
+      <i class='bx bx-log-out' id="log_out" style="cursor:pointer;" (click)="logout()"></i>
+    </li>
+  </ul>
+</div>
+
+

@@ -1,0 +1,114 @@
+<div class="card" style="cursor:pointer"
+     *ngFor="let item of roles| filter:filterSearch| paginate: { itemsPerPage: limitTo, currentPage: page }; let i = index">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-10 col-sm-12 showOnHover" [routerLink]="['/roles/edit', item.name]">
+        <p class="mb-0">
+          <b class="mr-2">{{item.name}} <i class="fa fa-edit text-muted editIcon"></i></b>
+        </p>
+        <p class="mb-0">
+          <span class="text-muted">Permissions:</span>
+          <span *ngIf="item.permissionLabel !=''">
+            {{item.permissionLabel}}
+          </span>
+          <span *ngIf="item.permissionLabel == ''" class="text-muted">
+            &nbsp;&nbsp;<i class="fa fa-exclamation-triangle text-warning"></i> No permission provided.
+          </span>
+        </p>
+      </div>
+      <div class="col-md-2 col-sm-12">
+        <span class="float-right">
+          <a *ngIf="item.usersCount>0" role="button" class="text-primary border-0 mr-2" (click)="viewUsers(item.name)">
+            View {{item.usersCount}} users
+          </a>
+          <span class="text-muted" *ngIf="item.usersCount<=0">
+            No users allocated
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showPagination == 'true'" class="float-right">
+  <pagination-controls class="ml-auto" (pageChange)="page = $event"></pagination-controls>
+</div>
+
+<div class="modal" id="modalUsers" tabindex="-1" role="dialog" aria-labelledby="modalUsersTitle" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+
+      <div class="modal-body">
+        <h5 id="modalUsersTitle">
+          Users under {{selectedRole.name}}
+          <button type="button" class="close" (click)="closeModal()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </h5>
+        <p class="text-muted">Click on any user to view their details</p>
+
+        <table class="table table-sm table-bordered table-hover">
+          <thead class="bg-light">
+            <tr class="border-bottom">
+              <th scope="col">
+                <p class="m-1 text-center text-muted">
+                  #
+                </p>
+              </th>
+              <th scope="col" class="text-left">
+                <p class="m-1">
+                  <b>Name</b>
+                </p>
+              </th>
+
+              <th scope="col" class="text-left">
+                <p class="m-1"><b>Phone Number</b></p>
+              </th>
+
+              <th scope="col" class="text-left">
+                <p class="m-1">
+                  <b>
+                    Active
+                  </b>
+                </p>
+              </th>
+              
+              <th scope="col" *ngIf="showOperations=='true'">
+                &nbsp;
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let user of selectedRole.users; let i = index"
+                [ngClass]="user.userTypes!=undefined && user.userTypes.id == 2?'bg-light border-dark':''"
+                [routerLink]="['/users/edit', user.id]" style="cursor:pointer">
+              <td>
+                <p class="text-muted text-center">
+                  {{i+1}}
+                </p>
+              </td>
+              <td class="text-left">
+                <p class="text-dark m-1">{{user.firstName}} {{user.lastName}}</p>
+              </td>
+
+              <td class="text-left">
+                <p class="m-1">{{user.phoneNumber}}</p>
+              </td>
+
+              <td class="text-left">
+                <p class="m-1" style="cursor:pointer">
+                  <i [ngClass]="user.isActive? 'fa fa-circle text-success':'fa fa-circle text-danger'"></i>
+                  {{user.isActive? 'Yes':'No'}}
+                </p>
+              </td>
+             
+            </tr>
+          </tbody>
+        </table>
+        <a href="javascript:void(0);" class="text-primary" [routerLink]="['/users']">View all users</a>
+      </div>
+
+    </div>
+  </div>
+</div>
+
